@@ -1,0 +1,1859 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comprendre la dépression</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --primary: #5B7C99;
+      --primary-dark: #3D5A73;
+      --secondary: #E8B4A2;
+      --secondary-dark: #D4967F;
+      --accent: #7EB09B;
+      --accent-dark: #5A9178;
+      --warning: #E07A5F;
+      --dark: #2D3142;
+      --light: #F7F5F3;
+      --lighter: #FAFAFA;
+      --text: #3D3D3D;
+      --text-light: #666;
+    }
+    
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--light);
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    
+    /* ========== PROGRESS BAR ========== */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--primary));
+      width: 0%;
+      z-index: 1000;
+      transition: width 0.1s ease;
+    }
+    
+    /* ========== NAVIGATION ========== */
+    .nav-dots {
+      position: fixed;
+      right: 25px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .nav-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--primary);
+      opacity: 0.25;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    
+    .nav-dot:hover {
+      opacity: 0.6;
+      transform: scale(1.2);
+    }
+    
+    .nav-dot.active {
+      opacity: 1;
+      transform: scale(1.4);
+      background: var(--accent);
+    }
+    
+    .nav-dot::before {
+      content: attr(data-label);
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--dark);
+      color: white;
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    
+    .nav-dot:hover::before {
+      opacity: 1;
+    }
+    
+    /* ========== SECTIONS ========== */
+    section {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 8%;
+      position: relative;
+    }
+    
+    .section-inner {
+      max-width: 1100px;
+      width: 100%;
+    }
+    
+    /* ========== HERO ========== */
+    .hero {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      text-align: center;
+      padding: 60px 8%;
+    }
+    
+    .hero-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 300;
+      margin-bottom: 25px;
+      opacity: 0;
+      animation: fadeUp 1s ease forwards;
+    }
+    
+    .hero h1 strong {
+      font-weight: 700;
+      color: var(--secondary);
+    }
+    
+    .hero-intro {
+      font-size: 1.2rem;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.3s forwards;
+      margin-bottom: 40px;
+      line-height: 1.7;
+    }
+    
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.6s forwards;
+    }
+    
+    .stat-item {
+      text-align: center;
+    }
+    
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--secondary);
+    }
+    
+    .stat-label {
+      font-size: 0.9rem;
+      opacity: 0.85;
+    }
+    
+    .scroll-hint {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: bounce 2s infinite;
+      cursor: pointer;
+    }
+    
+    .scroll-hint svg {
+      width: 28px;
+      height: 28px;
+      stroke: white;
+      opacity: 0.6;
+    }
+    
+    /* ========== CHAPTER HEADERS ========== */
+    .chapter-header {
+      background: var(--dark);
+      color: white;
+      text-align: center;
+      min-height: 50vh;
+    }
+    
+    .chapter-number {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--secondary);
+      margin-bottom: 15px;
+    }
+    
+    .chapter-header h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    
+    .chapter-subtitle {
+      font-size: 1.1rem;
+      opacity: 0.7;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    
+    /* ========== CONTENT SECTIONS ========== */
+    .content-section {
+      background: var(--light);
+    }
+    
+    .content-section.alt {
+      background: var(--lighter);
+    }
+    
+    .two-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    
+    .two-columns.reverse {
+      direction: rtl;
+    }
+    
+    .two-columns.reverse > * {
+      direction: ltr;
+    }
+    
+    @media (max-width: 900px) {
+      .two-columns {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .two-columns.reverse {
+        direction: ltr;
+      }
+    }
+    
+    /* ========== VISUAL ELEMENTS ========== */
+    .visual-card {
+      position: relative;
+    }
+    
+    .icon-box {
+      width: 100%;
+      max-width: 320px;
+      aspect-ratio: 1;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.12);
+      transition: transform 0.5s ease;
+      margin: 0 auto;
+    }
+    
+    .icon-box:hover {
+      transform: scale(1.03) rotate(0deg);
+    }
+    
+    .icon-box svg {
+      width: 45%;
+      height: 45%;
+      stroke: white;
+      stroke-width: 1.5;
+      fill: none;
+    }
+    
+    .icon-box.style-1 {
+      background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+      transform: rotate(-3deg);
+    }
+    
+    .icon-box.style-2 {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      transform: rotate(3deg);
+    }
+    
+    .icon-box.style-3 {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      transform: rotate(-2deg);
+    }
+    
+    .icon-box.style-4 {
+      background: linear-gradient(135deg, var(--warning) 0%, #C65D45 100%);
+      transform: rotate(2deg);
+    }
+    
+    /* ========== TEXT CONTENT ========== */
+    .text-content h3 {
+      font-size: 1.9rem;
+      color: var(--dark);
+      margin-bottom: 20px;
+      position: relative;
+      padding-left: 20px;
+    }
+    
+    .text-content h3::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 5px;
+      height: calc(100% - 10px);
+      width: 4px;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+    
+    .text-content > p {
+      font-size: 1.05rem;
+      color: var(--text-light);
+      margin-bottom: 20px;
+      line-height: 1.75;
+    }
+    
+    /* ========== REVEAL SYSTEM ========== */
+    .reveal-container {
+      margin-top: 25px;
+    }
+    
+    .reveal-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 22px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+    
+    .reveal-trigger:hover {
+      background: var(--primary-dark);
+      transform: translateX(5px);
+    }
+    
+    .reveal-trigger.active {
+      background: var(--accent);
+    }
+    
+    .reveal-trigger svg {
+      width: 18px;
+      height: 18px;
+      transition: transform 0.3s ease;
+    }
+    
+    .reveal-trigger.active svg {
+      transform: rotate(180deg);
+    }
+    
+    .reveal-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease, margin 0.5s ease, opacity 0.5s ease;
+      opacity: 0;
+      margin-top: 0;
+    }
+    
+    .reveal-content.open {
+      max-height: 500px;
+      opacity: 1;
+      margin-top: 20px;
+    }
+    
+    .reveal-box {
+      background: white;
+      border-radius: 12px;
+      padding: 20px 25px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+      border-left: 4px solid var(--accent);
+    }
+    
+    .reveal-box h4 {
+      color: var(--accent-dark);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    
+    .reveal-box p {
+      color: var(--text);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+    
+    .reveal-box ul {
+      margin: 10px 0 0 20px;
+      color: var(--text);
+    }
+    
+    .reveal-box li {
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+    
+    /* ========== KEY POINT BOX ========== */
+    .key-point {
+      background: white;
+      padding: 18px 22px;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.07);
+      border-left: 4px solid var(--warning);
+      margin: 25px 0;
+    }
+    
+    .key-point p {
+      font-size: 0.95rem;
+      color: var(--dark);
+      margin: 0;
+    }
+    
+    .key-point strong {
+      color: var(--warning);
+    }
+    
+    .key-point em {
+      background: #FFF3CD;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-style: normal;
+    }
+    
+    /* ========== PROGRESSIVE REVEAL CARDS ========== */
+    .cards-progressive {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 25px;
+    }
+    
+    .prog-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+    }
+    
+    .prog-card-header {
+      padding: 15px 20px;
+      background: var(--lighter);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.3s ease;
+    }
+    
+    .prog-card-header:hover {
+      background: #E8EEF2;
+    }
+    
+    .prog-card-header h4 {
+      font-size: 1rem;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .prog-card-header .icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+    }
+    
+    .prog-card-header svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--text-light);
+      transition: transform 0.3s ease;
+    }
+    
+    .prog-card.open .prog-card-header svg {
+      transform: rotate(180deg);
+    }
+    
+    .prog-card-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+    
+    .prog-card.open .prog-card-body {
+      max-height: 300px;
+    }
+    
+    .prog-card-content {
+      padding: 20px;
+      color: var(--text-light);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+    
+    /* ========== SYMPTOM GRID ========== */
+    .symptom-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+    
+    .symptom-card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .symptom-card::before {
+      content: 'Cliquer pour en savoir plus';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--primary);
+      color: white;
+      font-size: 0.8rem;
+      padding: 8px;
+      text-align: center;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+    }
+    
+    .symptom-card:hover::before {
+      transform: translateY(0);
+    }
+    
+    .symptom-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    }
+    
+    .symptom-card.expanded::before {
+      display: none;
+    }
+    
+    .symptom-icon-small {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 15px;
+    }
+    
+    .symptom-icon-small svg {
+      width: 26px;
+      height: 26px;
+      stroke: white;
+      stroke-width: 2;
+      fill: none;
+    }
+    
+    .symptom-card h4 {
+      font-size: 1.1rem;
+      color: var(--dark);
+      margin-bottom: 10px;
+    }
+    
+    .symptom-card > p {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+    
+    .symptom-detail {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, margin 0.4s ease;
+    }
+    
+    .symptom-card.expanded .symptom-detail {
+      max-height: 200px;
+      margin-top: 15px;
+    }
+    
+    .symptom-detail-content {
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+    
+    /* ========== COMPARISON BOX ========== */
+    .comparison-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 30px 0;
+    }
+    
+    @media (max-width: 700px) {
+      .comparison-box {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .compare-side {
+      padding: 25px;
+      border-radius: 15px;
+    }
+    
+    .compare-side.negative {
+      background: #FDEDEC;
+      border: 2px solid #F5B7B1;
+    }
+    
+    .compare-side.positive {
+      background: #E8F6F3;
+      border: 2px solid #A9DFBF;
+    }
+    
+    .compare-side h4 {
+      font-size: 1rem;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .compare-side.negative h4 {
+      color: #C0392B;
+    }
+    
+    .compare-side.positive h4 {
+      color: #1E8449;
+    }
+    
+    .compare-side ul {
+      margin-left: 20px;
+    }
+    
+    .compare-side li {
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+    
+    /* ========== TAKE HOME MESSAGES ========== */
+    .takeaway-section {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color: white;
+    }
+    
+    .takeaway-section h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 40px;
+    }
+    
+    .takeaway-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+    
+    .takeaway-card {
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 25px;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .takeaway-card:hover {
+      background: rgba(255,255,255,0.25);
+      transform: translateY(-5px);
+    }
+    
+    .takeaway-card .number {
+      width: 45px;
+      height: 45px;
+      background: white;
+      color: var(--accent-dark);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 0 auto 15px;
+    }
+    
+    .takeaway-card h4 {
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+    
+    .takeaway-card p {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      line-height: 1.6;
+    }
+    
+    /* ========== RESOURCES SECTION ========== */
+    .resources-section {
+      background: var(--dark);
+      color: white;
+    }
+    
+    .resources-section h2 {
+      text-align: center;
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+    }
+    
+    .resources-section .subtitle {
+      text-align: center;
+      opacity: 0.7;
+      margin-bottom: 40px;
+    }
+    
+    .resources-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    
+    .resource-card {
+      background: rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 25px;
+      transition: all 0.3s ease;
+    }
+    
+    .resource-card:hover {
+      background: rgba(255,255,255,0.12);
+      transform: translateY(-3px);
+    }
+    
+    .resource-card h4 {
+      color: var(--secondary);
+      font-size: 1rem;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .resource-card p {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      line-height: 1.6;
+    }
+    
+    .resource-card .highlight {
+      background: var(--secondary);
+      color: var(--dark);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: inline-block;
+      margin-top: 12px;
+    }
+    
+    /* ========== ANIMATIONS ========== */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(10px); }
+    }
+    
+    .fade-in {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s ease;
+    }
+    
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .fade-in-delay-1 { transition-delay: 0.1s; }
+    .fade-in-delay-2 { transition-delay: 0.2s; }
+    .fade-in-delay-3 { transition-delay: 0.3s; }
+    
+    /* ========== MODAL ========== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      padding: 20px;
+    }
+    
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 20px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+    
+    .modal-overlay.active .modal-content {
+      transform: scale(1);
+    }
+    
+    .modal-header {
+      padding: 25px 30px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .modal-header h3 {
+      font-size: 1.3rem;
+      color: var(--dark);
+    }
+    
+    .modal-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: var(--lighter);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    
+    .modal-close:hover {
+      background: var(--warning);
+      color: white;
+    }
+    
+    .modal-body {
+      padding: 30px;
+    }
+    
+    .modal-body p {
+      margin-bottom: 15px;
+      line-height: 1.7;
+      color: var(--text);
+    }
+    
+    .modal-body .tip {
+      background: #E8F6F3;
+      border-left: 4px solid var(--accent);
+      padding: 15px 20px;
+      border-radius: 0 10px 10px 0;
+      margin-top: 20px;
+    }
+    
+    .modal-body .tip h4 {
+      color: var(--accent-dark);
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="progress-bar" id="progress"></div>
+  
+  <nav class="nav-dots" id="navDots"></nav>
+
+  <!-- ==================== HERO ==================== -->
+  <section class="hero" id="section-intro">
+    <div class="hero-content">
+      <h1>Comprendre la <strong>dépression</strong></h1>
+      <p class="hero-intro">
+        Un voyage pour mieux identifier les signes, déconstruire les idées reçues, 
+        et découvrir les chemins vers le mieux-être — pour soi ou pour un proche.
+      </p>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-number">1/3</div>
+          <div class="stat-label">des étudiants en détresse<br>psychologique</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">80%</div>
+          <div class="stat-label">peuvent se rétablir<br>avec un accompagnement</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">∞</div>
+          <div class="stat-label">profils concernés<br>(pas de "type" dépressif)</div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-hint" onclick="document.getElementById('section-chapter1').scrollIntoView({behavior: 'smooth'})">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 5v14M5 12l7 7 7-7"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ==================== CHAPITRE 1 ==================== -->
+  <section class="chapter-header" id="section-chapter1">
+    <div class="section-inner fade-in">
+      <div class="chapter-number">Partie 1</div>
+      <h2>Le corps qui ralentit</h2>
+      <p class="chapter-subtitle">Quand l'énergie s'échappe et que chaque geste devient une montagne</p>
+    </div>
+  </section>
+
+  <!-- Section 1.1 : Fatigue et sommeil -->
+  <section class="content-section" id="section-fatigue">
+    <div class="section-inner">
+      <div class="two-columns">
+        <div class="visual-card fade-in">
+          <div class="icon-box style-1">
+            <svg viewBox="0 0 24 24">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </div>
+        </div>
+        <div class="text-content fade-in fade-in-delay-1">
+          <h3>Fatigue et troubles du sommeil</h3>
+          <p>
+            La dépression affecte profondément l'énergie et le sommeil. Ce n'est pas de la paresse 
+            ou un manque de volonté — c'est comme porter un poids invisible qui épuise chaque geste.
+          </p>
+          
+          <div class="cards-progressive">
+            <div class="prog-card" onclick="toggleProgCard(this)">
+              <div class="prog-card-header">
+                <h4>
+                  <span class="icon" style="background: #E8D5F2;">🌙</span>
+                  Les deux visages du sommeil perturbé
+                </h4>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </div>
+              <div class="prog-card-body">
+                <div class="prog-card-content">
+                  Le sommeil peut basculer dans deux extrêmes : des <strong>insomnies</strong> où l'esprit 
+                  tourne sans fin, ressassant pensées et inquiétudes... ou une <strong>hypersomnie</strong> 
+                  où même 12 heures de sommeil ne suffisent pas à recharger les batteries. 
+                  Dans les deux cas, le repos réparateur disparaît.
+                </div>
+              </div>
+            </div>
+            
+            <div class="prog-card" onclick="toggleProgCard(this)">
+              <div class="prog-card-header">
+                <h4>
+                  <span class="icon" style="background: #FCE4D6;">⚡</span>
+                  Une fatigue différente
+                </h4>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </div>
+              <div class="prog-card-body">
+                <div class="prog-card-content">
+                  Cette fatigue n'est pas liée à l'activité physique. Elle est là dès le réveil, 
+                  persistante, écrasante. Prendre une douche peut sembler aussi épuisant qu'un marathon. 
+                  Le corps fonctionne au ralenti, comme si chaque cellule manquait de carburant.
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="key-point">
+            <p><strong>💡 À retenir :</strong> Une personne déprimée <em>ne peut pas</em>, 
+            ce n'est pas qu'elle <em>ne veut pas</em>. Cette distinction est fondamentale pour comprendre et aider.</p>
+          </div>
+          
+          <div class="reveal-container">
+            <button class="reveal-trigger" onclick="toggleReveal(this)">
+              Ce qui peut aider
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </button>
+            <div class="reveal-content">
+              <div class="reveal-box">
+                <h4>Pistes concrètes</h4>
+                <p>Les petits pas comptent énormément. Un micro-objectif par jour, une activité physique 
+                douce même de 10 minutes — ce sont ces petites victoires qui cassent le cercle vicieux.</p>
+                <ul>
+                  <li>Se fixer UN objectif simple pour la journée</li>
+                  <li>Activité physique adaptée (même une courte marche)</li>
+                  <li>Un professionnel peut accompagner cette démarche progressive</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 1.2 : Ralentissement -->
+  <section class="content-section alt" id="section-ralentissement">
+    <div class="section-inner">
+      <div class="two-columns reverse">
+        <div class="visual-card fade-in">
+          <div class="icon-box style-2">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 6v6l4 2"/>
+            </svg>
+          </div>
+        </div>
+        <div class="text-content fade-in fade-in-delay-1">
+          <h3>Le ralentissement psychomoteur</h3>
+          <p>
+            Imaginez devoir traverser une pièce avec des poids aux chevilles, aux poignets, 
+            sur les épaules. Chaque mouvement demande un effort considérable.
+          </p>
+          
+          <div class="cards-progressive">
+            <div class="prog-card" onclick="toggleProgCard(this)">
+              <div class="prog-card-header">
+                <h4>
+                  <span class="icon" style="background: #D6EAF8;">🧠</span>
+                  Le ralentissement psychique
+                </h4>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </div>
+              <div class="prog-card-body">
+                <div class="prog-card-content">
+                  Les pensées sont comme "engluées". Réfléchir demande plus d'effort, la concentration 
+                  fuit, les décisions même simples deviennent difficiles. C'est comme si le cerveau 
+                  fonctionnait au ralenti, avec une bande passante réduite.
+                </div>
+              </div>
+            </div>
+            
+            <div class="prog-card" onclick="toggleProgCard(this)">
+              <div class="prog-card-header">
+                <h4>
+                  <span class="icon" style="background: #E8F6F3;">🚶</span>
+                  Le ralentissement moteur
+                </h4>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </div>
+              <div class="prog-card-body">
+                <div class="prog-card-content">
+                  Les gestes deviennent plus lents, plus coûteux en énergie. Parler peut demander 
+                  un effort. Le corps semble peser plus lourd. Ce n'est pas de la simulation — 
+                  c'est un symptôme physiologique mesurable et réel.
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="key-point">
+            <p><strong>💡 À retenir :</strong> Le corps et l'esprit fonctionnent <em>réellement</em> au ralenti. 
+            C'est un symptôme, pas un choix ou un manque de volonté.</p>
+          </div>
+          
+          <div class="reveal-container">
+            <button class="reveal-trigger" onclick="toggleReveal(this)">
+              Ce qui peut aider
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </button>
+            <div class="reveal-content">
+              <div class="reveal-box">
+                <h4>Approches thérapeutiques</h4>
+                <p>Certaines thérapies aident à se reconnecter au corps et à observer ses pensées 
+                sans jugement :</p>
+                <ul>
+                  <li>Pleine conscience (mindfulness)</li>
+                  <li>Thérapies corporelles</li>
+                  <li>Activités douces de reconnexion au corps</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== CHAPITRE 2 ==================== -->
+  <section class="chapter-header" id="section-chapter2">
+    <div class="section-inner fade-in">
+      <div class="chapter-number">Partie 2</div>
+      <h2>L'isolement et la perte de plaisir</h2>
+      <p class="chapter-subtitle">Quand le monde se rétrécit et que les couleurs s'estompent</p>
+    </div>
+  </section>
+
+  <!-- Section 2.1 : Isolement -->
+  <section class="content-section" id="section-isolement">
+    <div class="section-inner">
+      <div class="two-columns">
+        <div class="visual-card fade-in">
+          <div class="icon-box style-4">
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M9 3v18M15 3v18M3 9h18M3 15h18"/>
+            </svg>
+          </div>
+        </div>
+        <div class="text-content fade-in fade-in-delay-1">
+          <h3>L'isolement social</h3>
+          <p>
+            Comme des portes qui se ferment une à une. L'impression que personne ne peut comprendre 
+            ce qu'on traverse, que les mots manquent pour expliquer.
+          </p>
+          
+          <div class="cards-progressive">
+            <div class="prog-card" onclick="toggleProgCard(this)">
+              <div class="prog-card-header">
+                <h4>
+                  <span class="icon" style="background: #FDEDEC;">🔄</span>
+                  Le cercle vicieux
+                </h4>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </div>
+              <div class="prog-card-body">
+                <div class="prog-card-content">
+                  L'isolement aggrave les symptômes, qui renforcent l'envie de s'isoler. 
+                  On évite les sorties, les appels, les messages. Les liens se distendent. 
+                  La solitude devient à la fois un refuge et une prison.
+                </div>
+              </div>
+            </div>
+            
+            <div class="prog-card" onclick="toggleProgCard(this)">
+              <div class="prog-card-header">
+                <h4>
+                  <span class="icon" style="background: #EBF5FB;">🤝</span>
+                  L'incompréhension ressentie
+                </h4>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </div>
+              <div class="prog-card-body">
+                <div class="prog-card-content">
+                  "Personne ne peut comprendre." Cette pensée revient souvent. Elle isole davantage 
+                  car elle empêche de tendre la main. Pourtant, partager — même un peu — peut 
+                  être le premier pas pour briser le cercle.
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="key-point">
+            <p><strong>💡 À retenir :</strong> L'isolement est un <em>symptôme</em>, pas un choix de vie. 
+            La personne n'est pas "asociale" — elle est en difficulté.</p>
+          </div>
+          
+          <div class="reveal-container">
+            <button class="reveal-trigger" onclick="toggleReveal(this)">
+              Ce qui peut aider
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </button>
+            <div class="reveal-content">
+              <div class="reveal-box">
+                <h4>Retrouver du lien</h4>
+                <ul>
+                  <li>Partager même un peu, même par écrit</li>
+                  <li>Soutien social : proches, amis, famille</li>
+                  <li>Groupes de parole : associations, pairs aidants</li>
+                  <li>Accepter l'aide proposée, même si c'est difficile</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2.2 : Anhédonie -->
+  <section class="content-section alt" id="section-anhedonie">
+    <div class="section-inner">
+      <div class="two-columns reverse">
+        <div class="visual-card fade-in">
+          <div class="icon-box style-3">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+              <line x1="9" y1="9" x2="9.01" y2="9"/>
+              <line x1="15" y1="9" x2="15.01" y2="9"/>
+            </svg>
+          </div>
+        </div>
+        <div class="text-content fade-in fade-in-delay-1">
+          <h3>L'anhédonie : quand le plaisir disparaît</h3>
+          <p>
+            Ce mot technique désigne quelque chose de très concret : l'incapacité à ressentir 
+            du plaisir dans ce qui en procurait avant. Les passions deviennent fades, 
+            les moments de joie n'arrivent plus.
+          </p>
+          
+          <div class="cards-progressive">
+            <div class="prog-card" onclick="toggleProgCard(this)">
+              <div class="prog-card-header">
+                <h4>
+                  <span class="icon" style="background: #FEF9E7;">👅</span>
+                  Tous les sens touchés
+                </h4>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </div>
+              <div class="prog-card-body">
+                <div class="prog-card-content">
+                  Le goût des aliments s'estompe, les odeurs semblent lointaines, les textures 
+                  deviennent indifférentes. Le film préféré ne fait plus rire, la musique 
+                  adorée laisse vide. C'est comme si un filtre gris recouvrait le monde.
+                </div>
+              </div>
+            </div>
+            
+            <div class="prog-card" onclick="toggleProgCard(this)">
+              <div class="prog-card-header">
+                <h4>
+                  <span class="icon" style="background: #FCE4D6;">🍽️</span>
+                  Impact sur l'alimentation
+                </h4>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </div>
+              <div class="prog-card-body">
+                <div class="prog-card-content">
+                  Deux tendances peuvent apparaître : perdre tout intérêt pour la nourriture 
+                  (pas d'énergie pour cuisiner, manger par obligation)... ou au contraire 
+                  rechercher des "shots" de plaisir dans le sucré, le gras — le système de 
+                  récompense essayant de compenser.
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="key-point">
+            <p><strong>💡 À retenir :</strong> Le système de récompense du cerveau <em>dysfonctionne</em>. 
+            Ce n'est pas un caprice ou un manque d'intérêt — c'est neurobiologique.</p>
+          </div>
+          
+          <div class="reveal-container">
+            <button class="reveal-trigger" onclick="toggleReveal(this)">
+              Ce qui peut aider
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </button>
+            <div class="reveal-content">
+              <div class="reveal-box">
+                <h4>Réintroduire progressivement</h4>
+                <ul>
+                  <li>Planifier des activités qui faisaient sens (même sans envie au départ)</li>
+                  <li>Micro-routines douces et réalistes</li>
+                  <li>Ne pas attendre "l'envie" pour agir — elle reviendra en agissant</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== CHAPITRE 3 ==================== -->
+  <section class="chapter-header" id="section-chapter3">
+    <div class="section-inner fade-in">
+      <div class="chapter-number">Partie 3</div>
+      <h2>Les émotions en tempête</h2>
+      <p class="chapter-subtitle">Tristesse, anxiété, et le brouillard émotionnel</p>
+    </div>
+  </section>
+
+  <!-- Section 3 : Grille de symptômes cliquables -->
+  <section class="content-section" id="section-emotions">
+    <div class="section-inner">
+      <div class="text-content fade-in" style="text-align: center; margin-bottom: 20px;">
+        <h3 style="padding-left: 0;">Les visages multiples de la dépression</h3>
+        <p style="max-width: 700px; margin: 0 auto;">
+          La dépression ne se manifeste pas de la même façon chez tout le monde. 
+          Cliquez sur chaque carte pour en savoir plus.
+        </p>
+      </div>
+      
+      <div class="symptom-grid fade-in fade-in-delay-1">
+        
+        <!-- Tristesse -->
+        <div class="symptom-card" onclick="openModal('tristesse')">
+          <div class="symptom-icon-small" style="background: linear-gradient(135deg, #5DADE2, #3498DB);">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M16 16s-1.5-2-4-2-4 2-4 2"/>
+              <line x1="9" y1="9" x2="9.01" y2="9"/>
+              <line x1="15" y1="9" x2="15.01" y2="9"/>
+            </svg>
+          </div>
+          <h4>Tristesse pathologique</h4>
+          <p>Différente d'un simple "coup de blues" — elle persiste et ne varie pas selon le contexte.</p>
+        </div>
+        
+        <!-- Anxiété -->
+        <div class="symptom-card" onclick="openModal('anxiete')">
+          <div class="symptom-icon-small" style="background: linear-gradient(135deg, #F5B041, #E67E22);">
+            <svg viewBox="0 0 24 24">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </div>
+          <h4>Anxiété permanente</h4>
+          <p>L'invitée VIP de la dépression — présente dans 80% des cas, comme une épée de Damoclès.</p>
+        </div>
+        
+        <!-- Alexithymie -->
+        <div class="symptom-card" onclick="openModal('alexithymie')">
+          <div class="symptom-icon-small" style="background: linear-gradient(135deg, #AF7AC5, #8E44AD);">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="8" y1="15" x2="16" y2="15"/>
+              <line x1="9" y1="9" x2="9.01" y2="9"/>
+              <line x1="15" y1="9" x2="15.01" y2="9"/>
+            </svg>
+          </div>
+          <h4>Alexithymie</h4>
+          <p>Difficulté à identifier et décrire ce qu'on ressent — les émotions deviennent illisibles.</p>
+        </div>
+        
+        <!-- Concentration -->
+        <div class="symptom-card" onclick="openModal('concentration')">
+          <div class="symptom-icon-small" style="background: linear-gradient(135deg, #58D68D, #27AE60);">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 16v-4"/>
+              <path d="M12 8h.01"/>
+            </svg>
+          </div>
+          <h4>Troubles de concentration</h4>
+          <p>Pensées qui tournent en boucle, mémoire qui flanche, difficulté à se concentrer.</p>
+        </div>
+        
+        <!-- Culpabilité -->
+        <div class="symptom-card" onclick="openModal('culpabilite')">
+          <div class="symptom-icon-small" style="background: linear-gradient(135deg, #E74C3C, #C0392B);">
+            <svg viewBox="0 0 24 24">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              <line x1="4" y1="4" x2="20" y2="20"/>
+            </svg>
+          </div>
+          <h4>Culpabilité et dévalorisation</h4>
+          <p>Vision négative de soi, du monde, du futur. Sentiment de ne rien valoir.</p>
+        </div>
+        
+        <!-- Irritabilité -->
+        <div class="symptom-card" onclick="openModal('irritabilite')">
+          <div class="symptom-icon-small" style="background: linear-gradient(135deg, #F39C12, #D68910);">
+            <svg viewBox="0 0 24 24">
+              <path d="M18 15l-6-6-6 6"/>
+              <circle cx="12" cy="12" r="10"/>
+            </svg>
+          </div>
+          <h4>Irritabilité</h4>
+          <p>La dépression ne se manifeste pas toujours par de la tristesse — parfois c'est de l'irritabilité.</p>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== CHAPITRE 4 ==================== -->
+  <section class="chapter-header" id="section-chapter4">
+    <div class="section-inner fade-in">
+      <div class="chapter-number">Partie 4</div>
+      <h2>Les chemins vers le mieux-être</h2>
+      <p class="chapter-subtitle">Distinguer les fausses solutions des vraies ressources</p>
+    </div>
+  </section>
+
+  <!-- Section 4 : Solutions -->
+  <section class="content-section" id="section-solutions">
+    <div class="section-inner">
+      <div class="text-content fade-in" style="text-align: center; margin-bottom: 30px;">
+        <h3 style="padding-left: 0;">Ce qui aide vraiment vs ce qui aggrave</h3>
+      </div>
+      
+      <div class="comparison-box fade-in fade-in-delay-1">
+        <div class="compare-side negative">
+          <h4>❌ Fausses solutions</h4>
+          <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 15px;">
+            Soulagent à court terme, aggravent à long terme
+          </p>
+          <ul>
+            <li>S'isoler davantage pour "se protéger"</li>
+            <li>Éviter tout ce qui fait peur ou demande effort</li>
+            <li>Ruminer sans cesse les mêmes pensées</li>
+            <li>Compenser par des substances (alcool, etc.)</li>
+            <li>Attendre que "ça passe tout seul"</li>
+          </ul>
+        </div>
+        <div class="compare-side positive">
+          <h4>✓ Vraies ressources</h4>
+          <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 15px;">
+            Demandent un effort mais permettent d'avancer
+          </p>
+          <ul>
+            <li>Consulter un professionnel (psy, médecin)</li>
+            <li>Maintenir un minimum de lien social</li>
+            <li>Petits pas quotidiens, micro-objectifs</li>
+            <li>Accepter l'aide proposée</li>
+            <li>Techniques de gestion du stress</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="fade-in fade-in-delay-2" style="margin-top: 40px;">
+        <div class="key-point" style="border-left-color: var(--accent); max-width: 800px; margin: 0 auto;">
+          <p><strong>💡 Le modèle bio-psycho-social :</strong> La dépression résulte d'une combinaison de facteurs 
+          <em>biologiques</em> + <em>psychologiques</em> + <em>sociaux</em>. Bonne nouvelle : on peut agir sur ces 3 leviers ! 
+          C'est pourquoi la complémentarité psychiatre + psychologue + soutien social fonctionne.</p>
+        </div>
+      </div>
+      
+      <div class="fade-in fade-in-delay-3" style="margin-top: 40px; text-align: center;">
+        <div class="reveal-container" style="display: inline-block;">
+          <button class="reveal-trigger" onclick="toggleReveal(this)" style="background: var(--accent);">
+            La métaphore du guide
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="reveal-content">
+            <div class="reveal-box" style="text-align: left; max-width: 600px;">
+              <h4>Demander de l'aide = force, pas faiblesse</h4>
+              <p>Le professionnel est comme un guide en montagne : il connaît le terrain, 
+              donne des outils, montre le chemin... mais c'est <strong>vous</strong> qui marchez.</p>
+              <p style="margin-top: 15px;">C'est la personne qui est au centre, qui décide, qui sait quels sont 
+              les meilleurs moyens pour elle d'aller mieux. Le professionnel accompagne cette découverte.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== TAKE HOME MESSAGES ==================== -->
+  <section class="takeaway-section" id="section-takeaway">
+    <div class="section-inner">
+      <h2 class="fade-in">Ce qu'il faut retenir</h2>
+      
+      <div class="takeaway-grid">
+        <div class="takeaway-card fade-in fade-in-delay-1">
+          <div class="number">1</div>
+          <h4>La dépression se soigne</h4>
+          <p>60 à 80% des personnes s'en remettent avec des soins adaptés. Ce n'est pas une fatalité.</p>
+        </div>
+        
+        <div class="takeaway-card fade-in fade-in-delay-2">
+          <div class="number">2</div>
+          <h4>On n'est pas ses symptômes</h4>
+          <p>La personne a été joyeuse, compétente, créative... et le sera à nouveau.</p>
+        </div>
+        
+        <div class="takeaway-card fade-in fade-in-delay-3">
+          <div class="number">3</div>
+          <h4>C'est transitoire</h4>
+          <p>Même si sur le moment ça semble infini, les symptômes sont temporaires avec un accompagnement.</p>
+        </div>
+        
+        <div class="takeaway-card fade-in fade-in-delay-1">
+          <div class="number">4</div>
+          <h4>Plus tôt = mieux</h4>
+          <p>Plus on réagit rapidement avec une aide adaptée, plus le rétablissement est rapide.</p>
+        </div>
+        
+        <div class="takeaway-card fade-in fade-in-delay-2">
+          <div class="number">5</div>
+          <h4>PEUT pas ≠ VEUT pas</h4>
+          <p>Comprendre cette distinction permet de mieux aider — et de moins culpabiliser.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== RESSOURCES ==================== -->
+  <section class="resources-section" id="section-ressources">
+    <div class="section-inner">
+      <h2 class="fade-in">Où trouver de l'aide ?</h2>
+      <p class="subtitle fade-in">Des ressources concrètes, accessibles, pour soi ou pour un proche</p>
+      
+      <div class="resources-grid">
+        <div class="resource-card fade-in fade-in-delay-1">
+          <h4>📞 Écoute immédiate</h4>
+          <p>Fil Santé Jeunes, SOS Amitié, Nightline (par et pour étudiants). 
+          Écoute anonyme et gratuite, 7j/7 pour la plupart.</p>
+          <span class="highlight">Gratuit & Anonyme</span>
+        </div>
+        
+        <div class="resource-card fade-in fade-in-delay-2">
+          <h4>🏥 Services de santé</h4>
+          <p>Service de Santé Étudiante (SSE) de votre université. 
+          Médecins et psychologues formés aux problématiques étudiantes.</p>
+          <span class="highlight">Sur votre campus</span>
+        </div>
+        
+        <div class="resource-card fade-in fade-in-delay-3">
+          <h4>👨‍⚕️ Professionnels</h4>
+          <p>Médecin généraliste (première porte d'entrée), psychologue, psychiatre. 
+          Les consultations psy sont remboursées avec MonParcoursPsy.</p>
+          <span class="highlight">Remboursé</span>
+        </div>
+        
+        <div class="resource-card fade-in fade-in-delay-1">
+          <h4>🤝 Associations</h4>
+          <p>France Dépression, Unafam, groupes de parole locaux. 
+          Partage d'expérience avec des personnes qui comprennent.</p>
+          <span class="highlight">Soutien par les pairs</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== MODALS ==================== -->
+  <div class="modal-overlay" id="modal-tristesse" onclick="closeModal('tristesse')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3>😢 La tristesse pathologique</h3>
+        <button class="modal-close" onclick="closeModal('tristesse')">✕</button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Ce n'est pas un simple "coup de blues".</strong> La tristesse normale est une réaction 
+        à un événement négatif : une rupture, un échec, une perte. Elle fluctue, s'atténue avec le temps.</p>
+        
+        <p>La tristesse <em>pathologique</em> est différente :</p>
+        <ul style="margin: 15px 0 15px 20px;">
+          <li>Elle <strong>persiste</strong> sur le long terme (semaines, mois)</li>
+          <li>Elle <strong>ne varie pas</strong> selon le contexte (triste même dans des moments habituellement joyeux)</li>
+          <li>Elle s'accompagne d'un sentiment que <strong>ça ne s'arrêtera jamais</strong></li>
+        </ul>
+        
+        <p>Elle s'accompagne souvent de culpabilité ("c'est ma faute"), de dévalorisation ("je ne vaux rien") 
+        et d'une vision négative de tout : de soi, du monde, du futur.</p>
+        
+        <div class="tip">
+          <h4>💡 Ce qui peut aider</h4>
+          <p>Les thérapies cognitives aident à identifier et déconstruire les "pensées automatiques négatives" — 
+          ces biais cognitifs qui déforment la réalité.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-anxiete" onclick="closeModal('anxiete')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3>⚠️ L'anxiété permanente</h3>
+        <button class="modal-close" onclick="closeModal('anxiete')">✕</button>
+      </div>
+      <div class="modal-body">
+        <p><strong>80% des dépressions s'accompagnent d'anxiété.</strong> C'est vraiment "l'invitée VIP" 
+        de la dépression — elles vont souvent de pair.</p>
+        
+        <p><strong>Stress vs Anxiété :</strong></p>
+        <ul style="margin: 15px 0 15px 20px;">
+          <li><strong>Stress / Peur</strong> : réaction ponctuelle à un danger identifié. Le corps se mobilise, puis ça passe.</li>
+          <li><strong>Anxiété</strong> : anticipation permanente d'une menace diffuse. Comme une épée de Damoclès invisible.</li>
+        </ul>
+        
+        <p>L'anxiété crée une hypervigilance épuisante, une surestimation des dangers, des comportements 
+        d'évitement qui renforcent le cercle vicieux.</p>
+        
+        <div class="tip">
+          <h4>💡 Ce qui peut aider</h4>
+          <p>Techniques de respiration, exposition progressive aux situations évitées, 
+          thérapies pour stopper la boucle de l'évitement. Ces techniques s'apprennent avec un professionnel.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-alexithymie" onclick="closeModal('alexithymie')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3>😶 L'alexithymie</h3>
+        <button class="modal-close" onclick="closeModal('alexithymie')">✕</button>
+      </div>
+      <div class="modal-body">
+        <p>Ce mot compliqué désigne quelque chose de très concret : <strong>la difficulté à identifier, 
+        décrire et verbaliser ses émotions</strong>.</p>
+        
+        <p>"Je ne sais pas ce que je ressens." "Je me sens... vide ? Bizarre ? Je ne sais pas."</p>
+        
+        <p>Les émotions deviennent illisibles, comme brouillées. On peut les ressentir physiquement 
+        (boule au ventre, gorge serrée) sans pouvoir mettre de mot dessus.</p>
+        
+        <p>S'y ajoute souvent un <strong>biais de négativité</strong> : on voit tout en noir, 
+        les aspects négatifs sont amplifiés, les positifs minimisés ou ignorés.</p>
+        
+        <div class="tip">
+          <h4>💡 Ce qui peut aider</h4>
+          <p>La roue des émotions, les carnets émotionnels, les exercices basés sur des images ou de la musique. 
+          Certains groupes de "remédiation émotionnelle" existent aussi. Ça s'apprend !</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-concentration" onclick="closeModal('concentration')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3>🧠 Troubles de concentration</h3>
+        <button class="modal-close" onclick="closeModal('concentration')">✕</button>
+      </div>
+      <div class="modal-body">
+        <p>La pensée devient <strong>moins claire, moins efficace</strong>. Lire une page de cours 
+        et réaliser qu'on n'a rien retenu. Oublier ce qu'on allait faire en se levant.</p>
+        
+        <p>Ce n'est pas de la paresse intellectuelle — le cerveau est <strong>accaparé</strong> :</p>
+        <ul style="margin: 15px 0 15px 20px;">
+          <li><strong>Ruminations</strong> : ressasser le passé en boucle, les erreurs, les regrets</li>
+          <li><strong>Anticipation anxieuse</strong> : projeter des scénarios catastrophe sur le futur</li>
+        </ul>
+        
+        <p>Une tâche habituellement facile demande maintenant un effort considérable. 
+        La mémoire de travail est saturée par ces pensées parasites.</p>
+        
+        <div class="tip">
+          <h4>💡 Ce qui peut aider</h4>
+          <p>La pleine conscience (mindfulness) : revenir au moment présent, au "ici et maintenant". 
+          C'est une pratique validée scientifiquement pour diminuer les ruminations.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-culpabilite" onclick="closeModal('culpabilite')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3>💔 Culpabilité et dévalorisation</h3>
+        <button class="modal-close" onclick="closeModal('culpabilite')">✕</button>
+      </div>
+      <div class="modal-body">
+        <p>La dépression déforme la vision de soi-même. On se voit comme <strong>sans valeur, nul(le), 
+        un poids pour les autres</strong>.</p>
+        
+        <p>La culpabilité devient envahissante : culpabilité d'être déprimé, de ne pas "s'en sortir", 
+        de ne pas être "assez fort(e)", de faire subir ça aux proches...</p>
+        
+        <p>C'est ce qu'on appelle la <strong>"triade cognitive négative"</strong> :</p>
+        <ul style="margin: 15px 0 15px 20px;">
+          <li>Vision négative de <strong>soi</strong> ("je suis nul/le")</li>
+          <li>Vision négative du <strong>monde</strong> ("tout va mal")</li>
+          <li>Vision négative du <strong>futur</strong> ("ça ne s'arrangera jamais")</li>
+        </ul>
+        
+        <div class="tip">
+          <h4>💡 Ce qui peut aider</h4>
+          <p>Ces pensées ne sont pas la réalité — ce sont des symptômes. Les thérapies cognitives 
+          aident à identifier ces distorsions et à les remettre en perspective.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-irritabilite" onclick="closeModal('irritabilite')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h3>😤 L'irritabilité</h3>
+        <button class="modal-close" onclick="closeModal('irritabilite')">✕</button>
+      </div>
+      <div class="modal-body">
+        <p><strong>La dépression n'est pas toujours "triste".</strong> Parfois, elle se manifeste 
+        surtout par de l'irritabilité, de l'agacement permanent, des accès de colère.</p>
+        
+        <p>On supporte moins les choses, les bruits, les gens. Tout devient source d'énervement. 
+        Les proches peuvent le prendre personnellement, sans comprendre que c'est un symptôme.</p>
+        
+        <p>C'est particulièrement fréquent :</p>
+        <ul style="margin: 15px 0 15px 20px;">
+          <li>Chez les hommes (qui expriment parfois la dépression différemment)</li>
+          <li>Chez les adolescents et jeunes adultes</li>
+          <li>Quand la fatigue et l'anxiété s'accumulent</li>
+        </ul>
+        
+        <div class="tip">
+          <h4>💡 À retenir</h4>
+          <p>Si quelqu'un devient inhabituellement irritable sur une longue période, 
+          ça peut être un signe de dépression — pas juste un "mauvais caractère".</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ========== NAVIGATION ==========
+    const sections = [
+      { id: 'section-intro', label: 'Introduction' },
+      { id: 'section-chapter1', label: 'Le corps qui ralentit' },
+      { id: 'section-fatigue', label: 'Fatigue' },
+      { id: 'section-ralentissement', label: 'Ralentissement' },
+      { id: 'section-chapter2', label: 'Isolement & Plaisir' },
+      { id: 'section-isolement', label: 'Isolement' },
+      { id: 'section-anhedonie', label: 'Anhédonie' },
+      { id: 'section-chapter3', label: 'Émotions' },
+      { id: 'section-emotions', label: 'Symptômes' },
+      { id: 'section-chapter4', label: 'Solutions' },
+      { id: 'section-solutions', label: 'Ressources' },
+      { id: 'section-takeaway', label: 'À retenir' },
+      { id: 'section-ressources', label: 'Aide' }
+    ];
+    
+    // Create nav dots
+    const navDots = document.getElementById('navDots');
+    sections.forEach((section, index) => {
+      const dot = document.createElement('div');
+      dot.className = 'nav-dot' + (index === 0 ? ' active' : '');
+      dot.dataset.section = index;
+      dot.dataset.label = section.label;
+      dot.onclick = () => {
+        document.getElementById(section.id).scrollIntoView({ behavior: 'smooth' });
+      };
+      navDots.appendChild(dot);
+    });
+    
+    // Update active dot on scroll
+    const dots = document.querySelectorAll('.nav-dot');
+    window.addEventListener('scroll', () => {
+      let current = 0;
+      sections.forEach((section, index) => {
+        const el = document.getElementById(section.id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= window.innerHeight / 2) current = index;
+        }
+      });
+      dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === current);
+      });
+    });
+    
+    // ========== PROGRESS BAR ==========
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = (scrollTop / docHeight) * 100;
+      document.getElementById('progress').style.width = progress + '%';
+    });
+    
+    // ========== SCROLL ANIMATIONS ==========
+    const fadeElements = document.querySelectorAll('.fade-in');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15 });
+    
+    fadeElements.forEach(el => observer.observe(el));
+    
+    // ========== REVEAL TOGGLE ==========
+    function toggleReveal(btn) {
+      const content = btn.nextElementSibling;
+      const isOpen = content.classList.contains('open');
+      
+      content.classList.toggle('open');
+      btn.classList.toggle('active');
+    }
+    
+    // ========== PROGRESSIVE CARDS ==========
+    function toggleProgCard(card) {
+      card.classList.toggle('open');
+    }
+    
+    // ========== SYMPTOM CARDS ==========
+    document.querySelectorAll('.symptom-card').forEach(card => {
+      card.addEventListener('click', function() {
+        this.classList.toggle('expanded');
+      });
+    });
+    
+    // ========== MODALS ==========
+    function openModal(id) {
+      document.getElementById('modal-' + id).classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    function closeModal(id) {
+      document.getElementById('modal-' + id).classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    
+    // Close modal with Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.active').forEach(modal => {
+          modal.classList.remove('active');
+        });
+        document.body.style.overflow = '';
+      }
+    });
+  </script>
+</body>
+</html>
